@@ -1,0 +1,42 @@
+organization:
+  name: QiuXiangBa
+  url: https://github.com/QiuXiangBa
+  project_board:
+    number: 2
+    url: https://github.com/users/QiuXiangBa/projects/2
+
+repos:
+  e-store-java:
+    path: repos/backend/e-store
+    git: git@selfgithub:QiuXiangBa/e-store-java.git
+    desc: Java backend services (admin/app/dao/objectstorage)
+    lang: Java
+    status: active
+    worktrees:
+      convention: "repos/backend/e-store-<feature-name>"
+
+  e-store-admin-ui:
+    path: repos/frontend/admin-ui
+    git: git@selfgithub:QiuXiangBa/e-store-admin-ui.git
+    desc: React admin UI
+    lang: TypeScript
+    status: active
+    worktrees:
+      convention: "repos/frontend/admin-ui-<feature-name>"
+
+  e-store-webapp:
+    path: repos/frontend/webapp
+    git: local-only
+    desc: customer-facing webapp placeholder
+    lang: unknown
+    status: planned
+
+infrastructure:
+  object_storage:
+    provider: aws-s3
+    note: product/category and brand images are uploaded by client direct-to-s3 via presigned URL
+  local_dev:
+    frontend:
+      admin_ui: http://localhost:5173
+    backend:
+      e_store: http://localhost:8080

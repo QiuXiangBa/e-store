@@ -1,123 +1,98 @@
 # 开发流程
 
-## Git Flow
+## 阶段闸门（Stage Gate）
 
-```
-Issue (GitHub) → 认领 → worktree 开发 → 测试 → PR → 合 main → 部署
-```
+本项目统一采用 S1-S7 流程：
 
----
+1. S1：PRD 文档
+2. S2：技术方案（含数据库设计 + API 设计 + 时序图 + UML）
+3. S3：测试用例
+4. S4：服务端接口开发 + 单元测试
+5. S5：客户端页面开发 + 语法/构建检查
+6. S6：按测试用例执行完整联调测试
+7. S7：用户验收
 
-## 完整开发周期
+## Java 后端执行规范（强制）
 
-### 1. 从 Board 选取任务
+涉及 Java 后端开发（尤其 S4）时，必须遵循 `java-backend-standards`：
 
-```bash
-# 从 RESOURCE-MAP.yml 读取 organization 信息
-# 查看 Board
-gh project item-list <NUMBER> --owner <ORG> --format json
+1. 分层调用：Controller -> Service -> BizMapper -> Mapper
+2. Service 仅操作 DTO；BizMapper 返回 DTO
+3. VO/DTO/PO 转换必须通过 Convert（MapStruct）
+4. 非 boolean 魔法值使用常量或枚举
+5. 批处理禁止循环内逐条查询/逐条写入，必须批量查询+批量写入
 
-# 选一个 Todo 的 Issue
-gh issue view <number> -R <org>/<repo> --json title,body,comments
-```
+## 规范缺失确认规则（强制）
 
-### 2. 认领 Issue
+当任务需要遵循某类开发规范，但未找到对应规范文档（或规范路径不可读）时：
 
-```bash
-# 在 Issue 留 comment
-gh issue comment <number> -R <org>/<repo> --body "开始开发，分支: feature/<number>-<name>"
-```
+1. 必须先暂停进入实现阶段
+2. 必须先向用户确认规范来源或替代规范
+3. 未经用户确认，不得按默认习惯继续开发
 
-### 3. 创建 Worktree
+## 用户确认规则
 
-```bash
-cd repos/<repo>
-git fetch origin
-git worktree add ../repos/<repo>-<feature> -b feature/<number>-<name> main
-cd ../repos/<repo>-<feature>
+仅 S1、S2 需要用户确认：
 
-# 安装依赖（按项目技术栈）
-# pnpm install / go mod download / cargo fetch / pip install -r requirements.txt
-```
+1. S1 完成后，等待用户确认再进入 S2
+2. S2 完成后，等待用户确认再进入 S3
+3. S3-S7 不再等待用户确认，按流程自动推进
 
-### 4. 开发
+## S2 范围约束（强制）
 
-在 worktree 中开发，提交代码：
+S2 技术方案必须包含：
 
-```bash
-# 检查命令（按项目技术栈）
-# pnpm check / go vet ./... / cargo test / pytest
-git add . && git commit -m "feat: xxx"
-git push -u origin feature/<number>-<name>
-```
+1. 数据库设计（表结构、字段、索引、约束、变更策略）
+2. API 设计（路径、方法、请求/响应、错误码、兼容策略）
+3. API 时序图（Mermaid sequenceDiagram）
+4. UML 图（Mermaid classDiagram 或实体关系/领域关系图）
 
-### 5. 提交 PR
+S2 技术方案禁止包含：
 
-```bash
-cd repos/<repo>-<feature>
-gh pr create --base main --head feature/<number>-<name> --body "Closes #<number>"
-```
+1. 具体实现代码细节
+2. 过细的类内方法实现步骤
 
-在 Issue 留 comment 记录 PR 链接。
+## 每阶段产物
 
-### 6. 合并
+每个需求（Issue #N）统一在 docs 仓库维护文档目录：
 
-```bash
-cd repos/<repo>
-gh pr merge <PR号> --merge --delete-branch
-```
+`repos/docs/requirements/<repo>/<issue-number>/`
 
-Issue 通过 `Closes #<number>` 自动关闭。
+建议文件：
 
-### 7. 清理 Worktree
+1. `01-prd.md`（S1）
+2. `02-tech-design.md`（S2）
+3. `03-test-cases.md`（S3）
+4. `04-test-report.md`（S6）
+5. `05-acceptance.md`（S7）
 
-```bash
-cd repos/<repo>
-git worktree remove ../repos/<repo>-<feature>
-git branch -D feature/<number>-<name>  # 如果本地分支还在
-```
+## 文档提交流程（强制）
 
----
+所有阶段文档（S1-S7）在生成或更新后，必须按以下顺序执行：
 
-## 分支说明
+1. 提交到 docs 仓库（git commit）
+2. 推送到远端仓库（git push）
+3. 在回复中提供网络可访问地址：
+   - 文件链接（blob URL）
+   - 提交链接（commit URL）
 
-| 分支 | 用途 |
-|------|------|
-| `main` | 稳定版本 |
-| `dev` | 测试集成（可选） |
-| `feature/<number>-*` | 功能开发 |
-| `fix/<number>-*` | Bug 修复 |
+## GitHub Issue 模板清单
 
----
+在 Issue body 中使用如下清单跟踪阶段：
 
-## Commit 规范
-
-格式：`<type>: <description>`
-
-| Type | 说明 |
-|------|------|
-| `feat` | 新功能 |
-| `fix` | Bug 修复 |
-| `docs` | 文档 |
-| `refactor` | 重构 |
-| `test` | 测试 |
-| `chore` | 杂项 |
-
-示例：
-- `feat: add user authentication`
-- `fix: resolve race condition in queue`
-- `refactor: extract message parser`
-
----
-
-## 部署（可选）
-
-如果你有自动部署机制（如 webhook、CI/CD），在此描述：
-
-```
-触发条件: push 到 main
-流程: pull → install → build → restart
-验证: 查看部署日志
+```markdown
+- [ ] S1 PRD 已确认
+- [ ] S2 技术方案（DB + API + 时序图 + UML）已确认
+- [ ] S3 测试用例已完成
+- [ ] S4 服务端接口 + 单元测试已完成
+- [ ] S5 客户端页面 + 语法检查已通过
+- [ ] S6 按测试用例联调测试已通过
+- [ ] S7 用户验收通过
 ```
 
-如果没有自动部署，删除此段即可。
+## 与 Code Relay 的结合
+
+1. 每阶段关键结论写入 Issue comment
+2. 会话中断时必须写 `## HANDOFF`
+3. `## HANDOFF` 里明确当前阶段、下一阶段、阻塞项
+4. S4 阶段完成前必须自检并确认符合 `java-backend-standards`

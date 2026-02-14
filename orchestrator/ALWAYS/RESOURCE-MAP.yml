@@ -31,6 +31,13 @@ repos:
     lang: unknown
     status: planned
 
+  e-store-docs:
+    path: repos/docs
+    git: https://github.com/QiuXiangBa/e-store-docs.git
+    desc: centralized product and engineering docs
+    lang: Markdown
+    status: active
+
 infrastructure:
   object_storage:
     provider: aws-s3

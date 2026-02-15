@@ -46,11 +46,11 @@ gh project item-list <NUMBER> --owner <ORG> --format json
 gh issue view <number> -R <org>/<repo> --json title,body,comments,assignees,labels
 
 # 检查关联分支
-git branch -a | grep "feature/<number>"
+git branch -a | grep "codex/<number>-"
 
 # 如果分支存在，拉取并创建 worktree
-git fetch origin feature/<number>-<name>
-git worktree add repos/<repo>-<feature> feature/<number>-<name>
+git fetch origin codex/<number>-<name>
+git worktree add repos/<repo>-<feature> codex/<number>-<name>
 ```
 
 从 Issue comments 中找最近的 `## HANDOFF` 段落获取交接上下文。
@@ -61,7 +61,7 @@ git worktree add repos/<repo>-<feature> feature/<number>-<name>
 Issue: #42 - <title>
 仓库: <repo>
 状态: In Progress
-分支: feature/42-<name>
+分支: codex/42-<name>
 上下文: [HANDOFF 摘要]
 下一步: xxx
 ```
@@ -95,8 +95,8 @@ gh project item-add <NUMBER> --owner <ORG> --url <issue-url>
 
 # 3. 创建分支 + worktree
 cd repos/<repo>
-git worktree add ../repos/<repo>-<feature> -b feature/<number>-<name> main
+git worktree add ../repos/<repo>-<feature> -b codex/<number>-<name> main
 
 # 4. 在 Issue 留 comment
-gh issue comment <number> -R <org>/<repo> --body "开始开发，分支: feature/<number>-<name>"
+gh issue comment <number> -R <org>/<repo> --body "开始开发，分支: codex/<number>-<name>"
 ```

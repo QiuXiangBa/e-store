@@ -46,4 +46,4 @@ infrastructure:
     frontend:
       admin_ui: http://localhost:5173
     backend:
-      e_store: http://localhost:8080
+      e_store: http://localhost:8092

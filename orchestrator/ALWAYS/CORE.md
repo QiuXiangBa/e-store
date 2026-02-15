@@ -14,6 +14,17 @@
 
 ---
 
+## 状态单写原则（强制）
+
+为避免重复维护与状态漂移，状态只维护一处：
+
+1. 阶段进度只更新 Issue checklist
+2. Project Board 仅作为视图，不写第二份状态文本
+3. Issue comment 仅记录增量事实（决策、风险、阻塞、产物链接、测试结果）
+4. 不在 comment 重复抄写 checklist 状态
+
+---
+
 ## 阶段闸门规则（强制）
 
 1. 流程必须按 S1 -> S2 -> S3 -> S4 -> S5 -> S6 -> S7 执行
@@ -43,7 +54,7 @@ S2 技术方案必须同时具备：
 ### 开工
 
 ```markdown
-开始开发，分支: `feature/<issue-number>-<short-name>`
+开始开发，分支: `codex/<issue-number>-<short-name>`
 当前阶段: S1
 ```
 
@@ -73,7 +84,7 @@ S4
 2. xxx
 
 ### 分支
-`feature/<issue-number>-<short-name>` @ <commit-sha>
+`codex/<issue-number>-<short-name>` @ <commit-sha>
 
 ### 注意事项
 - xxx
@@ -98,6 +109,8 @@ PR #<id> 已提交/合并。
 ## Worktree 使用
 
 推荐使用 `git worktree` 进行任务隔离开发，避免多任务互相污染。
+
+分支命名统一为：`codex/<issue-number>-<short-name>`。
 
 ---
 

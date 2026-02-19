@@ -13,6 +13,11 @@
 7. S6.5：验收环境就绪（执行一键脚本并回传 URL）
 8. S7：用户验收
 
+默认执行策略（强制）：
+
+1. 除非明确满足“小改动”条件，否则必须走完整 S1-S7 流程
+2. 仅在 Fast Lane 条件满足时，才允许使用轻量流程
+
 ## 轻量流程（Fast Lane）
 
 以下场景允许走轻量流程，避免完整 S1-S7 带来的过度开销：
@@ -102,6 +107,18 @@ S2 技术方案禁止包含：
    - 后端：`/health/status` 返回 200
    - 前端：`http://localhost:5173` 可访问
 4. 启动失败时，必须自动重试或报错定位，不交给用户手动排查
+
+## CI 门禁（强制）
+
+所有 PR 在合并前必须通过对应仓库的 CI：
+
+1. 前端（`repos/frontend/admin-ui`）：
+   - `npm run build`
+2. 后端（`repos/backend/e-store`）：
+   - `mvn -q -DskipTests compile`
+   - `mvn -q -DskipITs test`
+
+任何一个门禁失败，不得合并到 `main`。
 
 ---
 

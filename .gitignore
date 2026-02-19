@@ -1,4 +1,6 @@
 .DS_Store
+/\.DS_Store
+**/.DS_Store
 /eg
 /repos
 
@@ -12,6 +14,11 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
+nohup.out
+dev.log
+dev.log.*
+*.log
+.acceptance-logs/
 
 # Editor directories and files
 .idea

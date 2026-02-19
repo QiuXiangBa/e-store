@@ -1,0 +1,41 @@
+name: CI Frontend Admin UI
+
+on:
+  pull_request:
+    paths:
+      - "repos/frontend/admin-ui/**"
+      - ".github/workflows/ci-frontend-admin-ui.yml"
+  push:
+    branches:
+      - main
+    paths:
+      - "repos/frontend/admin-ui/**"
+      - ".github/workflows/ci-frontend-admin-ui.yml"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+          cache-dependency-path: repos/frontend/admin-ui/package-lock.json
+
+      - name: Install dependencies
+        working-directory: repos/frontend/admin-ui
+        run: |
+          if [ -f package-lock.json ]; then
+            npm ci
+          else
+            npm install
+          fi
+
+      - name: Build
+        working-directory: repos/frontend/admin-ui
+        run: npm run build
+

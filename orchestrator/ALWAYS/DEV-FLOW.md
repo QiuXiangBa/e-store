@@ -122,7 +122,11 @@ S2 技术方案禁止包含：
 
 1. 前端（`repos/frontend/admin-ui`）：
    - `npm run build`
-2. 后端（`repos/backend/e-store`）：
+2. 前端（`repos/frontend/mall-webapp`）：
+   - `npm run build`
+3. 前端（`repos/frontend/mall-pc`）：
+   - `npm run build`
+4. 后端（`repos/backend/e-store`）：
    - `mvn -q -DskipTests compile`
    - `mvn -q -DskipITs test`
 
